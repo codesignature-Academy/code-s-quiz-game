@@ -300,7 +300,7 @@ export default function Teacher() {
                 Access Dashboard
               </Button>
               <p className="text-xs text-center text-muted-foreground">
-                Default code: TEACHER2024
+              
               </p>
             </CardContent>
           </Card>
