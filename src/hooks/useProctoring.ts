@@ -24,10 +24,10 @@ export function useProctoring({ playerId, isActive, onDisqualified }: UseProctor
   const logViolation = useCallback(async (type: string, details?: string) => {
     if (!playerId || !isActive) return;
 
-    // debounce same violation type within short window (3s)
+    // debounce same violation type within a longer window (60s)
     const now = Date.now();
     const lastTs = lastViolationTsRef.current[type] || 0;
-    if (now - lastTs < 3000) return; // ignore duplicates within 3s
+    if (now - lastTs < 60000) return; // ignore duplicates within 60s
     lastViolationTsRef.current[type] = now;
 
     try {
@@ -170,6 +170,7 @@ export function useProctoring({ playerId, isActive, onDisqualified }: UseProctor
 
         // Start lightweight AI analysis interval (heuristic)
         if (!analysisIntervalRef.current) {
+          // run AI heuristic less frequently to reduce false positives
           analysisIntervalRef.current = window.setInterval(async () => {
             try {
               const suspicious = await analyzeVideoStreamForSuspiciousBehavior(stream);
@@ -179,7 +180,7 @@ export function useProctoring({ playerId, isActive, onDisqualified }: UseProctor
             } catch (err) {
               console.error('AI analysis error:', err);
             }
-          }, 5000);
+          }, 10000);
         }
       } catch (error) {
         console.error('Camera access denied:', error);

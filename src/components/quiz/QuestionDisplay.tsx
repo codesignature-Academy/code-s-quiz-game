@@ -30,11 +30,18 @@ export function QuestionDisplay({
   selectedOption,
   showResults,
 }: QuestionDisplayProps) {
-  const [startTime] = useState(() => questionStartedAt ? new Date(questionStartedAt).getTime() : Date.now());
+  const [startTime, setStartTime] = useState<number>(() => questionStartedAt ? new Date(questionStartedAt).getTime() : Date.now());
+
+  // Update startTime when questionStartedAt changes so response timing stays accurate
+  useEffect(() => {
+    setStartTime(questionStartedAt ? new Date(questionStartedAt).getTime() : Date.now());
+  }, [questionStartedAt]);
 
   const handleOptionClick = (index: number) => {
     if (hasAnswered) return;
-    const responseTime = Date.now() - startTime;
+    // Compute response time relative to the official question start time when available
+    const reference = questionStartedAt ? new Date(questionStartedAt).getTime() : startTime;
+    const responseTime = Date.now() - reference;
     onAnswer(index, responseTime);
   };
 

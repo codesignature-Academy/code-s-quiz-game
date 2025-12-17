@@ -93,10 +93,12 @@ export function calculateScore(isCorrect: boolean, responseTimeMs: number | null
   const responseTimeSec = Math.max(0, responseTimeMs) / 1000;
 
   // Speed bonus scales with remaining time (faster -> larger bonus)
-  const timeLeft = Math.max(0, (timeLimitMs - responseTimeMs) / 1000);
+  // Clamp timeLeft between 0 and timeLimitMs to avoid inflated bonuses when clocks skew
+  const rawTimeLeft = (timeLimitMs - responseTimeMs) / 1000;
+  const clampedTimeLeft = Math.max(0, Math.min(rawTimeLeft, timeLimitMs / 1000));
   // Max bonus equals baseScore * 0.5 (i.e., 50) when answered instantly
   const maxBonus = Math.round(baseScore * 0.5);
-  const speedBonus = Math.round((timeLeft / (timeLimitMs / 1000)) * maxBonus);
+  const speedBonus = Math.round((clampedTimeLeft / (timeLimitMs / 1000)) * maxBonus);
 
   return baseScore + speedBonus;
 }
