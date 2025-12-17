@@ -299,9 +299,9 @@ export default function Teacher() {
               <Button onClick={handleLogin} className="w-full gradient-primary text-white" size="lg">
                 Access Dashboard
               </Button>
-              {/* <p className="text-xs text-center text-muted-foreground">
+              <p className="text-xs text-center text-muted-foreground">
                 Default code: TEACHER2024
-              </p> */}
+              </p>
             </CardContent>
           </Card>
         </div>
