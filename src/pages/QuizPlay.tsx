@@ -40,7 +40,9 @@ export default function QuizPlay() {
     remainingViolations,
   } = useProctoring({
     playerId: playerId || null,
-    isActive: proctoringReady && session?.status === 'question',
+    // Active only while proctoring is ready, session is in a question,
+    // and the quiz hasn't reached question 5 (stop on question 5 and onwards).
+    isActive: proctoringReady && session?.status === 'question' && (((session?.current_question_index || 0) + 1) < 5),
     onDisqualified: () => {
       toast.error('You have been disqualified for too many violations');
       // navigate student out to join page
